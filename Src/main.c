@@ -115,16 +115,33 @@ int main(void)
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+
     //Keeping all default code the same, and implementing API from stm32f4xx_hal-gpio.c
     //from CubeMX Pinout, we know PD12 - PD15 are LEDs.
     //Therefore PORT = D, and PIN = 12, 13, 14, or 15
     //Use CTRL + SPACE to display suggested auto-complete options
 
-    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
-    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
-	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-	HAL_Delay(500);										//API: stm32f4xx_hal.c
+    //Adding Button Press:
+    //We know from pinout the button is PA0, check to see if it was pressed.
+    // If Pressed, toggle led
+    //if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 1)				//This works
+    if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET)		//This is better (not hard-coded)
+    {
+
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+		HAL_Delay(500);										//API: stm32f4xx_hal.c
+    }
+    else
+    {
+    	//Turn everything off except RED - Make sure that's ON
+    	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+    	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
+    	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+    	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
+    }
 
 
   }
